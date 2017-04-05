@@ -6,20 +6,8 @@ ShopifyYoutubeAdd = {
         console.log('init!');
         jQuery("[enablejsapi=1]").each(function () {
             var iframeId = jQuery(this).attr('id');
-            jQuery(this).attr('src', jQuery(this).attr('src') + '&enablejsapi=1')
-
-            ShopifyYoutubeAdd.players[iframeId] = new YT.Player(iframeId, {
-                events: {
-                    'onReady': function (event) {
-                        console.log('onReady');
-                        ShopifyService.loadData();
-                        ShopifyYoutubeAdd.onPlayerReady(iframeId, event);
-                    },
-                    'onStateChange': function (event) {
-                        ShopifyYoutubeAdd.onPlayerStateChange(iframeId, event);
-                    }
-                }
-            });
+            jQuery(this).attr('src', jQuery(this).attr('src') + '&enablejsapi=1&origin=https://playingforchange.com');
+            setTimeout('ShopifyYoutubeAdd.addVideoEvents("'+iframeId+'")', 1000);
         });
     },
     onPlayerReady: function (iframeId, event) {
@@ -29,8 +17,28 @@ ShopifyYoutubeAdd = {
         console.log('video has changed state to ' + event.data);
         if (event.data == YT.PlayerState.ENDED) {
             ShopifyService.options.youtubeId = iframeId;
+            console.log('showing ad for iframe: ' + iframeId);
             ShopifyService.showAd();
+        }else{
+            if(!ShopifyService.preloadStarted){
+                ShopifyService.loadData();
+                ShopifyService.preloadStarted = true;
+            }
         }
+    },
+    addVideoEvents: function(iframeId){
+        ShopifyYoutubeAdd.players[iframeId] = new YT.Player(iframeId, {
+            events: {
+                'onReady': function (event) {
+                    console.log('onReady');
+                    ShopifyService.loadData();
+                    ShopifyYoutubeAdd.onPlayerReady(iframeId, event);
+                },
+                'onStateChange': function (event) {
+                    ShopifyYoutubeAdd.onPlayerStateChange(iframeId, event);
+                }
+            }
+        });
     }
 }
 
