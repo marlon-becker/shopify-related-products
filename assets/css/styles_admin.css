@@ -1,0 +1,184 @@
+/**
+ * Shopify Related Products - Shopping Cart
+ * https://www.shopify.com/buy-button
+ *
+ * Copyright (c) 2016 WebDevStudios
+ * Licensed under the GPLv2+ license.
+ */
+button.secp-add-shortcode.button, button.secp-add-shortcode.button:hover, button.secp-add-shortcode.button:active, button.secp-add-shortcode.button:focus {
+  padding-left: 25px;
+  background-image: url(../images/shopify_icon_small.png);
+  background-position: 6px 4px;
+  background-repeat: no-repeat; }
+
+.secp-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  z-index: 702000;
+  background: #fff;
+  overflow: hidden; }
+
+@media (min-width: 500px) {
+  .secp-modal {
+    left: 20px;
+    right: 20px;
+    border-radius: 5px; } }
+@media (min-height: 440px) {
+  .secp-modal {
+    top: 20px;
+    bottom: auto;
+    border-radius: 5px; } }
+
+.secp-modal-iframe {
+  width: 100%;
+  height: 100%; }
+@media (min-height: 440px) {
+  .secp-modal-iframe {
+    height: 400px; } }
+
+.secp-modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 45px; }
+.secp-modal-close:before {
+  content: "\f158";
+  font: normal 20px/1 dashicons;
+  speak: none;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #666; }
+
+@media (min-width: 645px) {}
+@media (min-width: 985px) {}
+
+.secp-product-container{
+  padding: 20px;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.secp-product{
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  margin-bottom: .5rem;
+}
+
+.secp-product img{
+  height: 70px;
+  width: 70px;
+  margin-right: 10px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.secp-product span{
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.secp-product-title{
+  font-size: 18px;
+  color: #222;
+}
+
+.secp-product-remove{
+  position: absolute;
+  right: 10px;
+  top:0;
+  height:55px;
+}
+
+.secp-product-remove a{
+  line-height: 67px;
+}
+
+.secp-admin-collections-container{
+  width: 600px;
+  min-height: 500px;
+}
+
+.secp-loader {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  margin: 1rem auto;
+}
+
+.secp-customize{
+  overflow: hidden;
+}
+
+.secp-customize-left{
+  width: 45%;
+  padding:2%;
+  float: left;
+}
+
+.secp-customize-left input{
+  margin-bottom: 10px;
+}
+
+.secp-product-details{
+  overflow: hidden;
+}
+
+.secp-product-details li{
+  float: left;
+  margin-right:10px;
+  font-size: .8em;
+}
+
+.secp-product-list.item img{
+  float: left;
+  margin-right: 10px;
+}
+
+.secp-product-list.item{
+  padding: 10px;
+  border: 1px solid #ececec;
+  margin-bottom: .5em;
+  cursor: pointer;
+  -webkit-transition: all 100ms;
+  -moz-transition: all 100ms;
+  -o-transition: all 100ms;
+  transition: all 100ms;
+}
+
+.secp-product-list.item:hover{
+  background: #fff;
+  border-color: #e1e1e1;
+  box-shadow: 0 0 5px rgba(0,0,0,.1);
+}
+
+.secp-admin-product-selection .secp-product{
+  width: 80%;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

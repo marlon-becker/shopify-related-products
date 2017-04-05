@@ -1,0 +1,16 @@
+<script id="secp-admin-product-list" type="text/html">
+<div class="secp-product secp-product-list item" data-id="{{id}}">
+    {{#images.0.small}}<img src="{{images.0.small}}">{{/images.0.small}}
+    <span class="secp-product-title">{{title}}</span>
+    <div class="secp-product-details">
+        <ul>
+            <li><b>Quantity:</b> {{quantity}}</li>
+            <li><b>Price:</b> {{price}} USD</li>
+            <li><b>Variant title:</b> {{vtitle}}</li>
+        </ul>
+    </div>
+    <div class="secp-product-remove">
+        <a onclick="jQuery('.secp-product-list').fadeOut(); jQuery('#secp_product_id').val('')" href="javascript:void(0)">remove</a>
+    </div>
+</div>
+</script>

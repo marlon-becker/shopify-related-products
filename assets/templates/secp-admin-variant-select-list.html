@@ -1,0 +1,12 @@
+<script id="secp-admin-variant-select-list" type="text/html">
+    <li class="secp-product secp-product-list item" onclick="secp_admin.addProduct(this)" data-shopify-id="{{id}}" data-shopify-variant-id="{{vid}}" style="overflow: hidden">
+        {{#vimages.0.small}}<img style="float:left; margin-left: 5px" src="{{vimages.0.medium}}">{{/vimages.0.small}}
+        <div class="<b>">
+            <ul>
+                <li><b>Quantity:</b> {{vquantity}}</li>
+                <li><b>Price:</b> {{vprice}} USD</li>
+                <li><b>Variant title:</b> {{vtitle}}</li>
+            </ul>
+        </div>
+    </li>
+</script>

@@ -1,0 +1,25 @@
+<script id="secp-product-list" type="text/html">
+        <div class="secp-product secp-product-list item" data-handle="{{handle}}" title="{{title}}">
+            <div data-product-id="{{id}}" class="product-block">
+                <div class="block-inner">
+                    <div class="image-cont shadow">
+                        <a class="image-link more-info" href="#">
+                            {{#images.0.large}}<img src="{{images.0.large}}" alt="{{title}}">{{/images.0.large}}
+                        </a>
+                        <a class="hover-info more-info" href="{{url}}">
+                            <div class="inner">
+                                <div class="innerer">
+                                    <div class="title">{{title}}</div>
+                                    <div class="separator"></div>
+                                    <div class="price">
+                                        $ {{price}} USD
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</script>
