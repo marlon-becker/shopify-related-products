@@ -66,7 +66,6 @@ class SECP_Customize {
 	 */
 	public function hooks() {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
-		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 		add_action( 'cmb2_admin_init', array( $this, 'add_options_page_metabox' ) );
 
 		/*Metabox shown in post/page*/
@@ -83,24 +82,7 @@ class SECP_Customize {
 		register_setting( $this->key, $this->key );
 	}
 
-	/**
-	 * Add menu options page
-	 *
-	 * @since  0.0.9
-	 */
-	public function add_options_page() {
-		$this->options_page = add_submenu_page(
-			'shopify_ecommerce_plugin_settings',
-			__( 'Customize', 'shopify-related-products' ),
-			__( 'Customize', 'shopify-related-products' ),
-			'manage_options',
-			$this->key,
-			array( $this, 'admin_page_display' )
-		);
 
-		// Include CMB CSS in the head to avoid FOUC.
-		add_action( "admin_print_styles-{$this->options_page}", array( 'CMB2_hookup', 'enqueue_cmb_css' ) );
-	}
 
 	/**
 	 * Admin page markup. Mostly handled by CMB2
