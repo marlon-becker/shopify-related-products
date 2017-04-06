@@ -86,8 +86,9 @@ class SECP_Shopifyapi {
 
                     $response = json_decode( $ShopifyApi->getCollection($_REQUEST['secp_id']) );
                     $data['collection'] = $this->_serializeCollections([current($response)]);
-                    $response = json_decode( $ShopifyApi->getCollectionProducts($_REQUEST['secp_id']));
-                    $data['products'] = $this->_serializeProducts($response->products, $params);
+                    $response =  $ShopifyApi->getCollectionProducts($_REQUEST['secp_id']);
+                    $data['products'] = $this->_serializeProducts($response, $params);
+
                 }
             break;
         }
@@ -128,13 +129,21 @@ class SECP_Shopifyapi {
 
         $productsIds = [];
 
+
         foreach($response->collects as $product){
-            $productsIds[] = $product->product_id;
+            $productsIds[(int)$product->sort_value] = $product->product_id;
         }
 
         $action = 'products.json?ids='.implode(',', $productsIds);
-        return $this->getJSON($action);
+        $collectionProducts = json_decode( $this->getJSON($action) );
 
+        foreach($collectionProducts->products as $product){
+            if(false !== $key = array_search($product->id, $productsIds)){
+                $productsIds[$key] = $product;
+            }
+        }
+
+        return $productsIds;
     }
 
     public function getCollection($id, $params){
@@ -228,6 +237,8 @@ class SECP_Shopifyapi {
             $variants = [];
 
             foreach ($product->variants as $variant) {
+
+
                 if ($variant->inventory_quantity > 0) {
                     $available = true;
                     $quantity += $variant->inventory_quantity;
