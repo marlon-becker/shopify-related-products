@@ -30,6 +30,7 @@ ShopifyYoutubeAdd = {
             events: {
                 'onReady': function (event) {
                     console.log('onReady');
+                    ShopifyService.loadData();
                     ShopifyYoutubeAdd.onPlayerReady(iframeId, event);
                 },
                 'onStateChange': function (event) {

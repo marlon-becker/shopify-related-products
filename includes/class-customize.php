@@ -12,7 +12,7 @@ class SECP_Customize {
 	 * Parent plugin class
 	 *
 	 * @var    class
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	protected $plugin = null;
 
@@ -20,7 +20,7 @@ class SECP_Customize {
 	 * Option key, and option page slug
 	 *
 	 * @var    string
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	protected $key = 'shopify_ecommerce_plugin_customize';
 
@@ -28,7 +28,7 @@ class SECP_Customize {
 	 * Options page metabox id
 	 *
 	 * @var    string
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	protected $metabox_id = 'shopify_ecommerce_plugin_customize_metabox';
 
@@ -36,7 +36,7 @@ class SECP_Customize {
 	 * Options Page title
 	 *
 	 * @var    string
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	protected $title = '';
 
@@ -51,7 +51,7 @@ class SECP_Customize {
 	/**
 	 * Constructor
 	 *
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 * @param  object $plugin Main plugin object.
 	 */
 	public function __construct( $plugin ) {
@@ -62,7 +62,7 @@ class SECP_Customize {
 	/**
 	 * Initiate our hooks
 	 *
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	public function hooks() {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -76,13 +76,11 @@ class SECP_Customize {
 	/**
 	 * Register our setting to WP
 	 *
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	public function admin_init() {
 		register_setting( $this->key, $this->key );
 	}
-
-
 
 	/**
 	 * Admin page markup. Mostly handled by CMB2
@@ -119,7 +117,7 @@ class SECP_Customize {
 	/**
 	 * Add custom fields to the options page.
 	 *
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 */
 	public function add_options_page_metabox() {
 
@@ -257,7 +255,7 @@ class SECP_Customize {
 	/**
 	 * Register settings notices for display
 	 *
-	 * @since  Shopify Related Products
+	 * @since  0.0.9
 	 * @param  int   $object_id Option key.
 	 * @param  array $updated   Array of updated fields.
 	 */
