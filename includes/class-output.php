@@ -192,6 +192,14 @@ class SECP_Output
             $managerOptions['secp_ad_subtitle'] = $args['ad_subtitle'];
         }
 
+        if ($args['utm_content']) {
+            $managerOptions['utm_content'] = $args['utm_content'];
+        }
+
+        if ($args['utm_campaign']) {
+            $managerOptions['utm_campaign'] = $args['utm_campaign'];
+        }
+
         if ($args['ad_manually']) {
             $managerOptions['adEmbed'] = $args['ad_manually'];
         }

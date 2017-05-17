@@ -294,6 +294,8 @@ class SECP_Customize {
 	    'secp_ad_youtube',
 	    'secp_ad_title',
 	    'secp_ad_subtitle',
+	    'secp_utm_content',
+	    'secp_utm_campaign',
     ];
 
 	const AD_TYPE_ALL = 99;
@@ -383,7 +385,7 @@ class SECP_Customize {
 				</p>
 			</div>
 
-			<div class="adtype-container-<?php echo self::AD_TYPE_SINGLE?> adtype-container cf" data-adtype="<?php echo self::AD_TYPE_COLLECTION?>">
+			<div style="overflow: hidden" class="adtype-container-<?php echo self::AD_TYPE_SINGLE?> adtype-container cf" data-adtype="<?php echo self::AD_TYPE_COLLECTION?>">
 				<p>
 
 					<button data-adtype="<?php echo self::AD_TYPE_COLLECTION?>" class="button secp-add-shortcode shopify-selector" data-endpoint="collections" data-product-type="collection">Select collection</button>
@@ -412,6 +414,7 @@ class SECP_Customize {
 				</p>
 			</div>
 
+			<div style="float:none">&nbsp;</div>
 
 			<div class="adtype-container-common">
 				<hr>
@@ -424,6 +427,19 @@ class SECP_Customize {
 					<input data-role="secp_shortcode" data-adtype="<?php echo self::AD_TYPE_ALL?>" type="text" id="secp_ad_subtitle" name="secp_ad_subtitle" value="<?php echo $fieldsValues['secp_ad_subtitle']?>">
 				</p>
 			</div>
+
+			<div class="adtype-container-common">
+				<hr>
+				<p>
+					<label for="secp_utm_content">Campaign Content</label>
+					<input data-role="secp_shortcode" data-adtype="<?php echo self::AD_TYPE_ALL?>" type="text" id="secp_utm_content" name="secp_utm_content" value="<?php echo $fieldsValues['secp_utm_content']?>">
+				</p>
+				<p>
+					<label for="secp_utm_campaign">Campaign Name</label>
+					<input data-role="secp_shortcode" data-adtype="<?php echo self::AD_TYPE_ALL?>" type="text" id="secp_utm_campaign" name="secp_utm_campaign" value="<?php echo $fieldsValues['secp_utm_campaign']?>">
+				</p>
+			</div>
+
 
 			<div class="adtype-container-common hidden">
 				<hr>
