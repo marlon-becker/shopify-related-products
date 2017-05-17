@@ -105,7 +105,7 @@ msgstr "Không có sản phẩm được thiết lập"
 msgid "Replace Product"
 msgstr "Thay thế sản phẩm"
 
-msgid "Shopify Related Products - Shopping Cart is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
+msgid "Shopify Related Products is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
 msgstr "Trình bổ trợ thương mại điện tử Shopify  - Giỏ hàng chưa đáp ứng các điều kiện và đã bị <a href=\"%s\">ngừng kích hoạt</a>. Hãy đảm bảo tất cả các điều kiện được khả dụng."
 
 msgid "Metabox configuration is required to have an ID parameter"
@@ -232,7 +232,7 @@ msgid "Save"
 msgstr "Lưu"
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
+msgid "Shopify Related Products"
 msgstr "Trình bổ trợ thương mại điện tử Shopify - Giỏ hàng"
 
 #. Plugin URI of the plugin/theme

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Shopify Related Products - Shopping Cart\n"
+"Project-Id-Version: Shopify Related Products\n"
 "POT-Creation-Date: 2016-03-18 13:42+0000\n"
 "PO-Revision-Date: 2016-03-18 09:29-0600\n"
 "Language-Team: Shopify <contact@shopify.com>\n"
@@ -110,7 +110,7 @@ msgstr "No hay juego de productos"
 msgid "Replace Product"
 msgstr "Reemplazar el producto"
 
-msgid "Shopify Related Products - Shopping Cart is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
+msgid "Shopify Related Products is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
 msgstr "Plugin de eCommerce de Shopify: El carrito de compras no cumplió con los requisitos y ha sido a href=\"%s\">desactivado</a>. Por favor, asegúrate que todos los requisitos estén disponibles."
 
 msgid "Metabox configuration is required to have an ID parameter"
@@ -237,7 +237,7 @@ msgid "Save"
 msgstr "Guardar"
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
+msgid "Shopify Related Products"
 msgstr "Plugin de eCommerce de Shopify - Carrito de compras"
 
 #. Plugin URI of the plugin/theme

@@ -1,5 +1,5 @@
 /**
- * Shopify Related Products - Shopping Cart - v1.1.4 - 2016-12-05
+ * Shopify Related Products - v0.0.9 - 2016-12-05
  * https://www.shopify.com/
  *
  * Copyright (c) 2016;
@@ -31,7 +31,7 @@ var open = false,
 	open = false;
 },
     callback = void 0; /**
-                        * Shopify Related Products - Shopping Cart - Add Button Modal
+                        * Shopify Related Products - Add Button Modal
                         * https://www.shopify.com/buy-button
                         *
                         * Licensed under the GPLv2+ license.
@@ -102,7 +102,7 @@ var _addButtonModal2 = _interopRequireDefault(_addButtonModal);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Shopify Related Products - Shopping Cart - Admin Shortcode
+ * Shopify Related Products - Admin Shortcode
  * https://www.shopify.com/buy-button
  *
  * Licensed under the GPLv2+ license.

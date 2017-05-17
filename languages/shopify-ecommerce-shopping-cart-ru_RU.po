@@ -105,8 +105,8 @@ msgstr "Товар не задан"
 msgid "Replace Product"
 msgstr "Заменить товар"
 
-msgid "Shopify Related Products - Shopping Cart is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
-msgstr "Для работы плагина Shopify eCommerce - Shopping Cart отсутствуют необходимые условия и он <a href=\"%s\">отключен</a>. Проверьте выполнение всех условий."
+msgid "Shopify Related Products is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
+msgstr "Для работы плагина Shopify eCommerce отсутствуют необходимые условия и он <a href=\"%s\">отключен</a>. Проверьте выполнение всех условий."
 
 msgid "Metabox configuration is required to have an ID parameter"
 msgstr "Конфигурация метабокса должна иметь параметр ID"
@@ -232,8 +232,8 @@ msgid "Save"
 msgstr "Сохранить"
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
-msgstr "Плагин Shopify eCommerce - Shopping Cart"
+msgid "Shopify Related Products"
+msgstr "Плагин Shopify eCommerce"
 
 #. Plugin URI of the plugin/theme
 msgid "https://www.shopify.com/buy-button"

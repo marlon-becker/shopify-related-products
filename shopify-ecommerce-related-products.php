@@ -253,7 +253,7 @@ class Shopify_RelatedProducts_Plugin {
 	public function requirements_not_met_notice() {
 		// Output our error.
 		echo '<div id="message" class="error">';
-		echo '<p>' . sprintf( __( 'Shopify Related Products - Shopping Cart is missing requirements and has been <a href="%s">deactivated</a>. Please make sure all requirements are available.', 'shopify-related-products' ), admin_url( 'plugins.php' ) ) . '</p>';
+		echo '<p>' . sprintf( __( 'Shopify Related Products is missing requirements and has been <a href="%s">deactivated</a>. Please make sure all requirements are available.', 'shopify-related-products' ), admin_url( 'plugins.php' ) ) . '</p>';
 		echo '</div>';
 	}
 

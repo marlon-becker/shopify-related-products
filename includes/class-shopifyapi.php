@@ -1,8 +1,8 @@
 <?php
 /**
- * Shopify Related Products - Shopping Cart Widget
- * @version 1.1.4
- * @package Shopify Related Products - Shopping Cart
+ * Shopify Related Products Widget
+ * @version 0.0.9
+ * @package Shopify Related Products
  */
 
 require_once dirname( __FILE__ ) . '/../vendor/cmb2/init.php';
@@ -129,7 +129,6 @@ class SECP_Shopifyapi {
 
         $productsIds = [];
 
-
         foreach($response->collects as $product){
             $productsIds[(int)$product->sort_value] = $product->product_id;
         }
@@ -237,8 +236,6 @@ class SECP_Shopifyapi {
             $variants = [];
 
             foreach ($product->variants as $variant) {
-
-
                 if ($variant->inventory_quantity > 0) {
                     $available = true;
                     $quantity += $variant->inventory_quantity;

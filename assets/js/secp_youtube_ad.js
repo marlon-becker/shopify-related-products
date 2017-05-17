@@ -6,7 +6,6 @@ ShopifyYoutubeAdd = {
         console.log('init!');
         jQuery("[enablejsapi=1]").each(function () {
             var iframeId = jQuery(this).attr('id');
-            jQuery(this).attr('src', jQuery(this).attr('src') + '&enablejsapi=1&origin=https://playingforchange.com');
             setTimeout('ShopifyYoutubeAdd.addVideoEvents("'+iframeId+'")', 1000);
         });
     },
@@ -31,7 +30,6 @@ ShopifyYoutubeAdd = {
             events: {
                 'onReady': function (event) {
                     console.log('onReady');
-                    ShopifyService.loadData();
                     ShopifyYoutubeAdd.onPlayerReady(iframeId, event);
                 },
                 'onStateChange': function (event) {

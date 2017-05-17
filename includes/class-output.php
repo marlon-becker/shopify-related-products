@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Shopify Related Products - Shopping Cart Output
- * @version 1.1.4
- * @package Shopify Related Products - Shopping Cart
+ * Shopify Related Products Output
+ * @version 0.0.9
+ * @package Shopify Related Products
  */
 class SECP_Output
 {
@@ -52,7 +52,6 @@ class SECP_Output
     public function hooks()
     {
         add_action('wp_footer', array($this, 'auto_add_shortcode'), 10, 2);
-        add_action('cmb2_init', array($this, 'button_endpoint'), 30);
         add_action('admin_enqueue_scripts', array($this, 'load_custom_wp_admin_scripts'));
     }
 
@@ -225,7 +224,6 @@ class SECP_Output
                 ShopifyService.endpoint = '<?php echo $endpoint;?>';
                 ShopifyService.templateUrl = '<?php echo $templatesUrl;?>';
 
-
                 ShopifyService.options = {
                 <?php foreach( $managerOptions as $option => $value ){ ?>
                 <?php echo $option;?>:
@@ -278,122 +276,6 @@ class SECP_Output
         $args = apply_filters('secp_product_output_args', $args);
 
         return $this->get_embed($args);
-    }
-
-    /**
-     * Get the cart embed
-     *
-     * @since 0.0.9
-     * @param  array $args Cart arguments.
-     * @return string      HTML embed markup.
-     */
-    public function get_cart($args)
-    {
-        $args = wp_parse_args($args, array(
-            'shop' => '',
-            'checkout_button_text' => cmb2_get_option('shopify_ecommerce_plugin_customize', 'checkout_button_text'),
-            'button_text_color' => substr(cmb2_get_option('shopify_ecommerce_plugin_customize', 'button_text_color'), 1),
-            'button_background_color' => substr(cmb2_get_option('shopify_ecommerce_plugin_customize', 'button_background_color'), 1),
-            'background_color' => cmb2_get_option('shopify_ecommerce_plugin_customize', 'background') ? substr(cmb2_get_option('shopify_ecommerce_plugin_customize', 'background_color'), 1) : 'transparent',
-            'text_color' => substr(cmb2_get_option('shopify_ecommerce_plugin_customize', 'text_color'), 1),
-            'accent_color' => substr(cmb2_get_option('shopify_ecommerce_plugin_customize', 'accent_color'), 1),
-            'cart_title' => cmb2_get_option('shopify_ecommerce_plugin_customize', 'cart_title'),
-            'cart_total_text' => '',
-            'discount_notice_text' => '',
-            'sticky' => '',
-            'empty_cart_text' => '',
-            'next_page_button_text' => '',
-        ));
-
-        $args['embed_type'] = 'cart';
-        $args['sticky'] = 'true';
-
-        $args = apply_filters('secp_cart_output_args', $args);
-
-        return $this->get_embed($args);
-    }
-
-    /**
-     * Handle endpoint for preview elements
-     *
-     * @since 0.0.9
-     */
-    public function button_endpoint()
-    {
-        if (!current_user_can('edit_posts')
-            || empty($_GET['product_handle'])
-        ) {
-            return;
-        }
-
-        $args = array(
-            'product_handle' => sanitize_text_field(wp_unslash($_GET['product_handle'])),
-        );
-
-        $other_args = array(
-            'shop',
-            'embed_type',
-            'buy_button_text',
-            'button_background_color',
-            'button_text_color',
-            'background',
-            'background_color',
-            'text_color',
-            'cart_title',
-            'checkout_button_text',
-            'redirect_to',
-            'show',
-        );
-
-        foreach ($other_args as $arg) {
-            if (isset($_GET[$arg])) {
-                if ('false' === $_GET[$arg]) {
-                    $args[$arg] = false;
-                } else {
-                    $args[$arg] = sanitize_text_field(wp_unslash($_GET[$arg]));
-                }
-            }
-        }
-
-        $args = apply_filters('secp_preview_args', $args);
-
-        ?>
-        <style type="text/css">
-            body {
-                text-align: center;
-            }
-
-            <?php if ( isset( $_GET['vcenter'] ) ): ?>
-            .secp-embed-product {
-                display: block !important;
-                margin: 0 auto;
-                position: relative;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-
-            <?php endif; ?>
-        </style>
-        <?php
-
-        echo $this->get_button($args);
-
-        if (!empty($_GET['show_cart'])) {
-            echo $this->get_cart($args);
-        }
-
-        do_action('secp_preview_output', $args);
-        die();
-    }
-
-    /**
-     * Embed the cart in the footer
-     *
-     * @since 0.0.9
-     */
-    function embed_cart()
-    {
-        echo $this->get_cart(array());
     }
 
     function secp_get_custom_fields()

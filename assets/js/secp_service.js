@@ -222,11 +222,10 @@ ShopifyRender = {
             jQueryfullContainer = jQuery('#' + $fullContainerId);
         }
 
-        var height = jQueryvideo.outerHeight();
+        var height = jQueryvideo.height();
         var $container = jQuery('<div class="secp-container-youtube-ad" id="' + $adId + '"></div>');
 
-        console.log('heigth: ' +  height)
-        $container.height( height );
+        $container.height( height ).css('margin-top','-30px');
         $container.html(html);
 
         // $container.find('.secp-product-ad-container').height( height );

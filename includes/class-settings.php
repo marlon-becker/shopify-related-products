@@ -1,8 +1,8 @@
 <?php
 /**
- * Shopify Related Products - Shopping Cart Settings
- * @version 1.1.4
- * @package Shopify Related Products - Shopping Cart
+ * Shopify Related Products Settings
+ * @version 0.0.9
+ * @package Shopify Related Products
  */
 
 class SECP_Settings {

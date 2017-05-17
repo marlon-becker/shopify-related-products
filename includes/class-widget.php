@@ -1,8 +1,8 @@
 <?php
 /**
- * Shopify Related Products - Shopping Cart Widget
- * @version 1.1.4
- * @package Shopify Related Products - Shopping Cart
+ * Shopify Related Products Widget
+ * @version 0.0.9
+ * @package Shopify Related Products
  */
 
 class SECP_Widget extends WP_Widget {

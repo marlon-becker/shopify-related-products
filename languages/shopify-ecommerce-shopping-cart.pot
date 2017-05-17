@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Shopify Related Products - Shopping Cart 1.1.3\n"
+"Project-Id-Version: Shopify Related Products 1.1.3\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/shopify-related-products\n"
 "POT-Creation-Date: 2016-12-05 18:27:55+00:00\n"
@@ -205,7 +205,7 @@ msgstr ""
 #: release/svn/shopify-related-products.php:260
 #: shopify-related-products.php:260
 msgid ""
-"Shopify Related Products - Shopping Cart is missing requirements and has "
+"Shopify Related Products is missing requirements and has "
 "been <a href=\"%s\">deactivated</a>. Please make sure all requirements are "
 "available."
 msgstr ""
@@ -485,7 +485,7 @@ msgid "Save"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
+msgid "Shopify Related Products"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

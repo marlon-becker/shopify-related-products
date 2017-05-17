@@ -105,7 +105,7 @@ msgstr "Ürün Ayarlanmadı"
 msgid "Replace Product"
 msgstr "Ürün Değiştir"
 
-msgid "Shopify Related Products - Shopping Cart is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
+msgid "Shopify Related Products is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
 msgstr "Shopify E-Ticaret EKlentisi - Alışveriş Sepetinde eksik gereksinimler var ve <a href=\"%s\">devre dışı bırakıldı</a>. Tüm gereksinimlerin bulunduğundan emin olun."
 
 msgid "Metabox configuration is required to have an ID parameter"
@@ -232,7 +232,7 @@ msgid "Save"
 msgstr "Kaydet"
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
+msgid "Shopify Related Products"
 msgstr "Shopify E-Ticaret EKlentisi - Alışveriş Sepeti"
 
 #. Plugin URI of the plugin/theme

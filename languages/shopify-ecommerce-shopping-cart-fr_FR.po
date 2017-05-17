@@ -105,7 +105,7 @@ msgstr "Aucun produit défini"
 msgid "Replace Product"
 msgstr "Remplacer le produit"
 
-msgid "Shopify Related Products - Shopping Cart is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
+msgid "Shopify Related Products is missing requirements and has been <a href=\"%s\">deactivated</a>. Please make sure all requirements are available."
 msgstr "Module eCommerce Shopify - Certaines informations manquent dans le panier d'achat et celui-ci a été <a href=\"%s\">désactivé</a>. Veuillez bien vérifier que ces informations soient présentes."
 
 msgid "Metabox configuration is required to have an ID parameter"
@@ -232,7 +232,7 @@ msgid "Save"
 msgstr "Enregistrer"
 
 #. Plugin Name of the plugin/theme
-msgid "Shopify Related Products - Shopping Cart"
+msgid "Shopify Related Products"
 msgstr "Module d'eCommerce Shopify - Panier"
 
 #. Plugin URI of the plugin/theme

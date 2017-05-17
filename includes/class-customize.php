@@ -1,7 +1,7 @@
 <?php
 /**
  * Shopify Related Products - Customize
- * @version 0.0.9
+ * @version Shopify Related Products
  * @package Shopify Related Products
  */
 
@@ -12,7 +12,7 @@ class SECP_Customize {
 	 * Parent plugin class
 	 *
 	 * @var    class
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	protected $plugin = null;
 
@@ -20,7 +20,7 @@ class SECP_Customize {
 	 * Option key, and option page slug
 	 *
 	 * @var    string
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	protected $key = 'shopify_ecommerce_plugin_customize';
 
@@ -28,7 +28,7 @@ class SECP_Customize {
 	 * Options page metabox id
 	 *
 	 * @var    string
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	protected $metabox_id = 'shopify_ecommerce_plugin_customize_metabox';
 
@@ -36,7 +36,7 @@ class SECP_Customize {
 	 * Options Page title
 	 *
 	 * @var    string
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	protected $title = '';
 
@@ -51,7 +51,7 @@ class SECP_Customize {
 	/**
 	 * Constructor
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 * @param  object $plugin Main plugin object.
 	 */
 	public function __construct( $plugin ) {
@@ -62,7 +62,7 @@ class SECP_Customize {
 	/**
 	 * Initiate our hooks
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	public function hooks() {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -76,7 +76,7 @@ class SECP_Customize {
 	/**
 	 * Register our setting to WP
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	public function admin_init() {
 		register_setting( $this->key, $this->key );
@@ -87,7 +87,7 @@ class SECP_Customize {
 	/**
 	 * Admin page markup. Mostly handled by CMB2
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	public function admin_page_display() {
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -119,7 +119,7 @@ class SECP_Customize {
 	/**
 	 * Add custom fields to the options page.
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 */
 	public function add_options_page_metabox() {
 
@@ -257,7 +257,7 @@ class SECP_Customize {
 	/**
 	 * Register settings notices for display
 	 *
-	 * @since  0.0.9
+	 * @since  Shopify Related Products
 	 * @param  int   $object_id Option key.
 	 * @param  array $updated   Array of updated fields.
 	 */
