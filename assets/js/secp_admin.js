@@ -118,7 +118,7 @@ var secp_shortcode =
         });
 
         console.log('adtype: '+ad_type)
-        if(ad_type == 0)
+        if(ad_type == 0 || ad_type == 3)
         {
             jQuery('.adtype-container-common').stop().slideUp();
         }else
