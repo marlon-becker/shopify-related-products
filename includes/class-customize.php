@@ -297,7 +297,8 @@ class SECP_Customize {
     ];
 
 	const AD_TYPE_ALL = 99;
-	const AD_TYPE_NONE = 0;
+	const AD_TYPE_DEFAULT = 0;
+	const AD_TYPE_NONE = 3;
 	const AD_TYPE_SINGLE = 1;
 	const AD_TYPE_COLLECTION = 2;
 
@@ -321,7 +322,14 @@ class SECP_Customize {
         <div id="secp_meta_box">
             <p>Only available products will be shown</p>
             <ul>
-                <li><input <?php checked( $fieldsValues['secp_ad_type'] ? $fieldsValues['secp_ad_type'] : 0, self::AD_TYPE_NONE ); ?>
+				<li><input <?php checked( $fieldsValues['secp_ad_type'] ? $fieldsValues['secp_ad_type'] : 0, self::AD_TYPE_DEFAULT ); ?>
+						data-adtype="<?php echo self::AD_TYPE_ALL?>"
+						data-role="secp_shortcode"
+						name="secp_ad_type"
+						type="radio"
+						value="<?php echo self::AD_TYPE_DEFAULT;?>"> Default (global configuration)
+				</li>
+				<li><input <?php checked( $fieldsValues['secp_ad_type'] ? $fieldsValues['secp_ad_type'] : 0, self::AD_TYPE_NONE ); ?>
 						data-adtype="<?php echo self::AD_TYPE_ALL?>"
 						data-role="secp_shortcode"
                         name="secp_ad_type"
