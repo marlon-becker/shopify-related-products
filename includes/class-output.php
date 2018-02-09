@@ -130,17 +130,23 @@ class SECP_Output
     public function get_embed($args = [])
     {
         ob_start();
-        if (count($args) <= 0) {
-            return;
-        }
+        if(get_post_meta(get_the_ID(), '_secp_no_ad', true)) { return; }
+        if (count($args) <= 0) { return; }
 
-        $min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
         $shopUrl = cmb2_get_option('shopify_ecommerce_plugin_settings', 'app_shop_url');
         $templatesUrl = plugins_url('', dirname(__FILE__)) . '/assets/templates/';
+        $min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
+        $scripts = [
+            'secp-shopify-service' => 'assets/js/secp_service.js',
+            'secp-template-engine' => 'assets/js/mustache' . $min . '.js'
+        ];
+        $css = ['secp-shopify-products' => 'assets/css/styles.css'];
+        $ads = [];
+        $templates = [];
+
+        //General configurations
         $managerOptions = [
-            'adYoutube' => $args['ad_youtube'],
-
             'utm_source' => cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_utm_source'),
             'utm_medium' => cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_utm_medium'),
             'utm_term' => cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_utm_term'),
@@ -149,77 +155,85 @@ class SECP_Output
 
             'secp_ad_title' => cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_ad_title'),
             'secp_ad_subtitle' => cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_ad_subtitle'),
-
         ];
 
-        //Config depending of type of add
-        switch ($args['ad_type']) {
-            case SECP_Customize::AD_TYPE_SINGLE:
-                if ($args['ad_floating']) {
-                    $templates = ["'secp-product-floating'"];
-                    $managerOptions['displayType'] = 'product-floating';
-                    $managerOptions['productId'] = $args['product_id'];
-                    $managerOptions['productVariantId'] = $args['product_variant_id'];
+        foreach (SECP_Customize::$types as $adType => $adTypeOptions) {
 
-                    $endpoint = 'product';
-                } else {
-                    $templates = ["'secp-product'", "'secp-product-list'"];
-                    $managerOptions['displayType'] = 'product-single';
-                    $managerOptions['productId'] = $args['product_id'];
-                    $managerOptions['productVariantId'] = $args['product_variant_id'];
-                    $endpoint = 'product';
-                }
-                break;
-            case SECP_Customize::AD_TYPE_COLLECTION:
-                $templates = ["'secp-products-list'", "'secp-product-list'"];
-                $managerOptions['numberOfProductsPerSlide'] = $args['ad_number_of_products_per_slide'];
-                $managerOptions['numberOfProducts'] = $args['ad_number_of_products'];
-                $managerOptions['collectionId'] = $args['collections_ids'];
-                $endpoint = 'collectionProducts';
+            $ads[$adType] = [];
+            $productId = '';
+            $collectionId = '';
+            $adTypeConfig = explode('_', $adType);
 
-                wp_enqueue_script('secp-owlcarousel-js', $this->plugin->url('vendor/owl-carousel2-2.2.0/owl.carousel.min.js'));
-                wp_enqueue_style('secp-owlcarousel-theme-css', $this->plugin->url('vendor/owl-carousel2-2.2.0/assets/owl.theme.default.min.css'));
-                wp_enqueue_style('secp-owlcarousel-css', $this->plugin->url('vendor/owl-carousel2-2.2.0/assets/owl.carousel.min.css'));
+            switch ($adTypeOptions['select']) {
+                case 'product':
+                    $productId = $args['product_id_' . $adType];
+                    if($productId == ''){ break; }
+                    $ads[$adType]['product_id'] = $productId;
+                    $ads[$adType]['product_variant_id'] = $args['product_variant_id_' . $adType];
+                    $ads[$adType]['active'] = true;
+                    if (strstr($adType, 'floating')) {
+                        $templates['secp-product-floating'] = "'secp-product-floating'";
+                    } else {
+                        $templates['secp-product'] = "'secp-product'";
+                        $templates['secp-product-list'] = "'secp-product-list'";
+                    }
+                    $ads[$adType]['endpoint'] = 'product';
+                    $ads[$adType]['total_products'] = '';
+                    $ads[$adType]['products_per_slide'] = '';
+                    break;
+                case 'collection':
+                    $collectionId = $args['collections_ids_' . $adType];
+                    if($collectionId == ''){ break; }
+                    $ads[$adType]['collection_id'] = $collectionId;
+                    $ads[$adType]['active'] = true;
+                    $scripts['secp-owlcarousel-js'] = 'vendor/owl-carousel2-2.2.0/owl.carousel.min.js';
+                    $css['secp-owlcarousel-theme-css'] = 'vendor/owl-carousel2-2.2.0/assets/owl.theme.default.min.css';
+                    $css['secp-owlcarousel-css'] = 'vendor/owl-carousel2-2.2.0/assets/owl.carousel.min.css';
+                    $templates['secp-product'] = "'secp-product'";
+                    $templates['secp-product-list'] = "'secp-product-list'";
+                    $templates['secp-products-list'] = "'secp-products-list'";
+                    $ads[$adType]['endpoint'] = 'collectionProducts';
+                    $ads[$adType]['total_products'] = $args['total_products_' . $adType];
+                    $ads[$adType]['products_per_slide'] = $args['products_per_slide_' . $adType];
+                    break;
+            }
 
-                break;
+            if(count($ads == 0)) {
+
+            }
+
+            if ($adTypeOptions['titles'] === true) {
+                $ads[$adType]['title'] = $args['title_' . $adType] ? $args['title_' . $adType] : $managerOptions['secp_ad_title'];
+                $ads[$adType]['subtitle'] = $args['subtitle_' . $adType] ? $args['subtitle_' . $adType] : $managerOptions['secp_ad_subtitle'];
+            }
+            $ads[$adType]['utm_content'] = $args['utm_content_' . $adType] ? $args['utm_content_' . $adType] : $managerOptions['utm_content'];
+            $ads[$adType]['utm_campaign'] = $args['utm_campaign_' . $adType] ? $args['utm_campaign_' . $adType] : $args['utm_campaign'];
+            $ads[$adType]['utm_source'] = $args['utm_source_' . $adType] ? $args['utm_source_' . $adType] : $managerOptions['utm_source'];
+            $ads[$adType]['utm_medium'] = $args['utm_medium_' . $adType] ? $args['utm_medium_' . $adType] : $managerOptions['utm_medium'];
+            $ads[$adType]['utm_term'] = $args['utm_term_' . $adType] ? $args['utm_term_' . $adType] : $managerOptions['utm_term'];
+
+            if($collectionId == '' && $productId == ''){ unset($ads[$adType]); continue; }
+
+            if (strstr($adType, 'video')) {
+                $scripts['secp-shopify-youtube'] = 'assets/js/secp_youtube_ad.js';
+            }
+            $ads[$adType]['product_type'] = $adTypeConfig[0];
+            $ads[$adType]['position'] = $adTypeConfig[1];
+            $ads[$adType]['loaded'] = false;
         }
 
-        if ($args['ad_title']) {
-            $managerOptions['secp_ad_title'] = $args['ad_title'];
+        foreach($scripts as $scriptName => $scriptPath) {
+            wp_enqueue_script($scriptName, $this->plugin->url($scriptPath));
         }
 
-        if ($args['ad_subtitle']) {
-            $managerOptions['secp_ad_subtitle'] = $args['ad_subtitle'];
-        }
-
-        if ($args['utm_content']) {
-            $managerOptions['utm_content'] = $args['utm_content'];
-        }
-
-        if ($args['utm_campaign']) {
-            $managerOptions['utm_campaign'] = $args['utm_campaign'];
-        }
-
-        if ($args['ad_manually']) {
-            $managerOptions['adEmbed'] = $args['ad_manually'];
-        }
-
-        //Shopify ad manager
-        wp_enqueue_script('secp-shopify-service', $this->plugin->url('assets/js/secp_service.js'));
-
-        //Javascript template engine
-        wp_enqueue_script('secp-template-engine', $this->plugin->url('assets/js/mustache' . $min . '.js'));
-
-        //General styles
-        wp_enqueue_style('secp-shopify-products', $this->plugin->url('assets/css/styles.css'));
-
-        //If ad shows after youtube video
-        if ($args['ad_youtube']) {
-            wp_enqueue_script('secp-shopify-youtube', $this->plugin->url('assets/js/secp_youtube_ad.js'));
+        foreach($css as $cssName => $cssPath) {
+            wp_enqueue_style($cssName, $this->plugin->url($cssPath));
         }
 
         add_action('admin_head', 'add_script_config');
-
+        /*echo '<pre>';
+        print_r($ads);
+        echo '</pre>';*/
         ?>
         <script>
             /* <![CDATA[ */
@@ -229,16 +243,20 @@ class SECP_Output
                 /*Initialize all shopify service variables*/
                 ShopifyService.templatesList = [<?php echo implode(',', $templates);?>];
                 ShopifyService.shopUrl = '<?php echo $shopUrl;?>';
-                ShopifyService.endpoint = '<?php echo $endpoint;?>';
                 ShopifyService.templateUrl = '<?php echo $templatesUrl;?>';
 
-                ShopifyService.options = {
-                <?php foreach( $managerOptions as $option => $value ){ ?>
-                <?php echo $option;?>:
-                '<?php echo $value;?>',
-                <?php } ?>
-            }
-                ShopifyService.init();
+                ShopifyService.ads = {
+                    <?php foreach( $ads as $adType => $adOptions ){ ?>
+                        <?php echo $adType . ':';?>{
+                        <?php foreach( $adOptions as $adOptionKey => $adOptionValue ){ ?>
+                        <?php echo $adOptionKey;?>:
+                        '<?php echo $adOptionValue;?>',
+                        <?php } ?>
+                    },
+                    <?php } ?>
+                }
+
+            ShopifyService.init();
             });
             /* ]]> */
         </script>
@@ -256,7 +274,6 @@ class SECP_Output
      */
     public function get_button($args)
     {
-
         /**
          * Arguments for buy button data attributes
          *
@@ -282,7 +299,6 @@ class SECP_Output
         }
 
         $args = apply_filters('secp_product_output_args', $args);
-
         return $this->get_embed($args);
     }
 
@@ -290,26 +306,24 @@ class SECP_Output
     {
         $custom_fields = get_post_custom();
         $custom_fields_secp = [];
+
+
+
         foreach ($custom_fields as $custom_field_key => $custom_field_value) {
             if (strstr($custom_field_key, 'secp')) {
                 $custom_field_key = str_replace('_secp', 'secp', $custom_field_key);
                 $custom_fields_secp[$custom_field_key] = current($custom_field_value);
             }
         }
+
         return $custom_fields_secp;
     }
 
     function auto_add_shortcode()
     {
-        $custom_fields = $this->secp_get_custom_fields();
-        $defaultCollectionId = cmb2_get_option('shopify_ecommerce_plugin_settings', 'secp_collections_ids');
 
-        if ($custom_fields['secp_ad_type'] > 0 || $custom_fields['secp_ad_manually']) {
-            $this->do_shortcode($custom_fields['secp_shortcode']);
-        }elseif($custom_fields['secp_ad_type'] == 0 && $defaultCollectionId > 0 && !$custom_fields['secp_ad_manually']){
-            $shortcode = '[shopify ad_type="2" collections_ids="'.$defaultCollectionId.'" ad_number_of_products="6" ad_number_of_products_per_slide="2" ad_slide_show="1"]';
-            $this->do_shortcode($shortcode);
-        }
+        $custom_fields = $this->secp_get_custom_fields();
+        $this->do_shortcode($custom_fields['secp_shortcode']);
     }
 
     function do_shortcode($shortcode){

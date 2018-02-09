@@ -1,9 +1,9 @@
 
 ShopifyYoutubeAdd = {
     players: {},
+    adShowed: false,
     init: function () {
         //Search all the youtube iframes with enabled js api (if not you can not check the state)
-        console.log('init!');
         jQuery("[enablejsapi=1]").each(function () {
             var iframeId = jQuery(this).attr('id');
             setTimeout('ShopifyYoutubeAdd.addVideoEvents("'+iframeId+'")', 1000);
@@ -14,14 +14,15 @@ ShopifyYoutubeAdd = {
     },
     onPlayerStateChange: function (iframeId, event) {
         console.log('video has changed state to ' + event.data);
-        if (event.data == YT.PlayerState.ENDED) {
-            ShopifyService.options.youtubeId = iframeId;
-            console.log('showing ad for iframe: ' + iframeId);
-            ShopifyService.showAd();
-        }else{
-            if(!ShopifyService.preloadStarted){
-                ShopifyService.loadData();
-                ShopifyService.preloadStarted = true;
+        if(this.adShowed === false) {
+            if (event.data == YT.PlayerState.ENDED) {
+                ShopifyService.options.youtubeId = iframeId;
+                ShopifyYoutubeAdd.adShowed = true;
+                ShopifyRender.showVideoAd();
+            } else {
+                if (!ShopifyService.preloadStarted) {
+                    ShopifyService.preloadStarted = true;
+                }
             }
         }
     },
@@ -30,7 +31,6 @@ ShopifyYoutubeAdd = {
             events: {
                 'onReady': function (event) {
                     console.log('onReady');
-                    ShopifyService.loadData();
                     ShopifyYoutubeAdd.onPlayerReady(iframeId, event);
                 },
                 'onStateChange': function (event) {

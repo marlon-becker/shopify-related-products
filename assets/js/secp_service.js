@@ -9,23 +9,11 @@ ShopifyService = {
     templateUrl: '',     //Url where to load the templates
     options: {},         //Option for the calls
     preloadData: '',
+    ads: '',
     init: function () {
         jQuery('body').append('<div id="ShopifyServiceTemplates" style="display:none"></div>');
+        console.log('Shopify Plugin - Loading templates...');
         this.loadNextTemplate();
-    },
-    openProductUrl: function (handle) {
-        var url = this.shopUrl + '/products/' + handle;
-        var utmParams = [];
-
-        utmParams.push('utm_source='+this.options.utm_source);
-        utmParams.push('utm_medium='+this.options.utm_medium);
-        utmParams.push('utm_term='+this.options.utm_term);
-        utmParams.push('utm_content='+this.options.utm_content);
-        utmParams.push('utm_campaign='+this.options.utm_campaign);
-
-        url = url + '?' + utmParams.join('&');
-        window.open(url, '_blank');
-        window.focus();
     },
     loadNextTemplate: function () {
         if (this.templatesList.length > 0) {
@@ -33,68 +21,9 @@ ShopifyService = {
                 this.loadTemplate(this.templatesList[0]);
                 this.templatesList.splice(0, 1);
             }
-        } else if (this.endpoint) {
-            if (!this.options.adYoutube) {
-                this.showAd();
-            }
-        }
-    },
-    loadData: function(){
-        switch (this.endpoint) {
-            case 'product':
-                secp_api.request(
-                    {
-                        secp_id: this.options.productId,
-                        secp_variant_id: this.options.productVariantId,
-                        'endpoint': this.endpoint,
-                        callback: 'ShopifyRender.setPreloadData'
-                    })
-                break;
-            case 'collectionProducts':
-                secp_api.request(
-                    {
-                        secp_id: this.options.collectionId,
-                        productsLimit: ShopifyService.options.numberOfProducts,
-                        'endpoint': this.endpoint,
-                        callback: 'ShopifyRender.setPreloadData'
-                    })
-                break;
-        }
-    },
-    showAd: function (options) {
-        switch (this.endpoint) {
-            case 'product':
-                if (!ShopifyService.options.adYoutube) {
-                    secp_api.request(
-                        {
-                            secp_id: this.options.productId,
-                            secp_variant_id: this.options.productVariantId,
-                            'endpoint': this.endpoint,
-                            callback: 'ShopifyRender.renderProduct'
-                        });
-                }else{
-                    console.log(ShopifyService.preloadData);
-                    if(ShopifyService.preloadData != ''){
-                        ShopifyRender.renderProduct(ShopifyService.preloadData)
-                    }
-                }
-                break;
-            case 'collectionProducts':
-                if (!ShopifyService.options.adYoutube) {
-                    secp_api.request(
-                        {
-                            secp_id: this.options.collectionId,
-                            productsLimit: ShopifyService.options.numberOfProducts,
-                            'endpoint': this.endpoint,
-                            callback: 'ShopifyRender.renderProductList'
-                        })
-                    break;
-                }else{
-                    console.log(ShopifyService.preloadData);
-                    if(ShopifyService.preloadData != '') {
-                        ShopifyRender.renderProductList(ShopifyService.preloadData)
-                    }
-                }
+        } else {
+            console.log('Shopify Plugin - Loading ads...');
+            this.loadAds();
         }
     },
     loadTemplate: function (template) {
@@ -103,19 +32,105 @@ ShopifyService = {
         jQuery.get(url, function (template) {
             var id = jQuery(template).attr('id');
             ShopifyService.templates[id] = jQuery(template).html();
+            console.log('Template loaded: '+id);
             ShopifyService.loadNextTemplate();
         });
-    }
+    },
+    loadAds: function() {
+
+        for(x in this.ads) {
+            if(!this.ads[x].loaded) {
+                this.ads[x].loaded = true;
+                this.loadAd(this.ads[x]);
+                return;
+            }
+
+        }
+    },
+    loadAd: function(ad) {
+        console.group('Loading ad');
+        console.log('Type: '+ad.product_type);
+        console.log('Position: '+ad.product_position);
+        switch (ad.endpoint) {
+            case 'product':
+                secp_api.request(
+                {
+                    secp_id: ad.product_id,
+                    product_type: ad.product_type,
+                    position: ad.position,
+                    title: ad.title,
+                    subtitle: ad.subtitle,
+                    secp_variant_id: ad.product_variant_id,
+                    utm_content: ad.utm_content,
+                    utm_campaign: ad.utm_campaign,
+                    utm_source: ad.utm_source,
+                    utm_medium: ad.utm_medium,
+                    utm_term: ad.utm_term,
+                    'endpoint': ad.endpoint,
+                    callback: 'ShopifyService.renderAd'
+                })
+            break;
+            case 'collectionProducts':
+                secp_api.request(
+                {
+                    secp_id: ad.collection_id,
+                    product_type: ad.product_type,
+                    position: ad.position,
+                    title: ad.title,
+                    subtitle: ad.subtitle,
+                    product_limit: ad.number_of_products,
+                    total_products: ad.total_products,
+                    products_per_slide: ad.products_per_slide,
+                    utm_content: ad.utm_content,
+                    utm_campaign: ad.utm_campaign,
+                    utm_source: ad.utm_source,
+                    utm_medium: ad.utm_medium,
+                    utm_term: ad.utm_term,
+                    'endpoint': ad.endpoint,
+                    callback: 'ShopifyService.renderAd'
+                })
+            break;
+        }
+        console.groupEnd();
+    },
+    renderAd: function(response) {
+        if(response.product_type == 'product') {
+            ShopifyRender.renderProduct(response);
+        } else {
+            ShopifyRender.renderProductList(response);
+        }
+    },
+    openProductUrl: function (obj) {
+        var handle = obj.data('handle');
+        var utm_source = obj.data('utm_source');
+        var utm_medium = obj.data('utm_medium');
+        var utm_term = obj.data('utm_term');
+        var utm_content = obj.data('utm_content');
+        var utm_campaign = obj.data('utm_campaign');
+
+        var url = this.shopUrl + '/products/' + handle;
+        var utmParams = [];
+
+        utmParams.push('utm_source='+utm_source);
+        utmParams.push('utm_medium='+utm_medium);
+        utmParams.push('utm_term='+utm_term);
+        utmParams.push('utm_content='+utm_content);
+        utmParams.push('utm_campaign='+utm_campaign);
+
+        url = url + '?' + utmParams.join('&');
+        window.open(url, '_blank');
+        window.focus();
+    },
 }
+
 
 ShopifyRender = {
     renderProduct: function (response) {
         if (response.product.length == 0) {
             return;
         }
-        if (!ShopifyService.options.adYoutube) {
-
-            if (ShopifyService.options.displayType == 'product-floating') {
+        if (response.position != 'video') {
+            if (response.position == 'floating') {
                 var html = this.renderResponse(response, 'secp-product-floating')
                 jQuery('body').append(html);
                 setTimeout('ShopifyRender.show()', 100);
@@ -124,71 +139,68 @@ ShopifyRender = {
                 var partials = {"secp-product-list": ShopifyService.templates['secp-product-list']};
                 var html = Mustache.render(template, response, partials).replace(/^\s*/mg, '');
 
-                if (ShopifyService.options.adEmbed) {
-                    jQuery('.secp-ad-manual-container').append(html);
+                if(response.position == 'top') {
+                    if(jQuery('.site-content').length > 0) {
+                        jQuery('.site-content').prepend(html)
+                    }
                 } else {
-                    if(jQuery('.site-content').length > 0){
+                    if(jQuery('.site-content').length > 0) {
                         jQuery('.site-content').append(html)
-                    }else{
+                    } else {
                         jQuery('footer:first').before(html);
                     }
                 }
                 ShopifyRender.show();
             }
         } else {
-
             var template = ShopifyService.templates['secp-product'];
             var partials = {"secp-product-list": ShopifyService.templates['secp-product-list']};
             var html = Mustache.render(template, response, partials).replace(/^\s*/mg, '');
-
-            ShopifyRender.showInYoutubeVideo(html, ShopifyService.options.youtubeId);
+            ShopifyRender.showInYoutubeVideo(html, 'youtube-product');
         }
         jQuery('.secp-product-close').click(function (e) {
             e.preventDefault();
-            jQuery('.secp-ad').removeClass('secp-product-loaded');
+            jQuery(this).parent().removeClass('secp-product-loaded');
             return false;
-        })
-
+        });
+    ShopifyService.loadAds();
     },
     renderProductList: function (response) {
-
-        jQuery( window ).on('resize', function(){
+        jQuery(window).on('resize', function () {
             ShopifyRender.updateSize();
         });
 
+        console.group('Render product list');
         var template = ShopifyService.templates['secp-products-list'];
         var partials = {"secp-product-list": ShopifyService.templates['secp-product-list']};
         var html = Mustache.render(template, response, partials).replace(/^\s*/mg, '');
 
-        if (!ShopifyService.options.adYoutube) {
-            if (ShopifyService.options.adEmbed) {
-                jQuery('.secp-ad-manual-container').append(html);
-            } else {
+        console.log('position: '+response.position);
 
-                if(jQuery('.site-content').length > 0){
+        if (response.position != 'video') {
+            if(response.position == 'top') {
+                if(jQuery('.site-content').length > 0) {
+                    jQuery('.site-content').prepend(html)
+                }
+            } else {
+                if(jQuery('.site-content').length > 0) {
                     jQuery('.site-content').append(html)
-                }else{
+                } else {
                     jQuery('footer:first').before(html);
                 }
             }
-
-            var sizeOptions = {
-                0: { items: 1 },
-                600: { items: 2 },
-                1000: { items: ShopifyService.options.numberOfProductsPerSlide }
-            };
-
         } else {
             ShopifyYoutubeAdd.init();
-            ShopifyRender.showInYoutubeVideo(html, ShopifyService.options.youtubeId);
-
-            var sizeOptions = {
-                0: { items: 3 },
-                600: { items: 3 },
-                1000: { items: ShopifyService.options.numberOfProductsPerSlide }
-            };
-
+            ShopifyRender.showInYoutubeVideo(html, 'youtube-collection');
         }
+
+        console.log('Products per slide: '+response.products_per_slide);
+        var sizeOptions = {
+            0: { items: 3 },
+            600: { items: 3 },
+            1000: { items: response.products_per_slide > 0 ? response.products_per_slide : 2 }
+        };
+
         //If slider option is activated
         jQuery('.owl-carousel').owlCarousel({
             loop: true,
@@ -196,23 +208,29 @@ ShopifyRender = {
             nav: true,
             responsive: sizeOptions
         });
-
+        console.groupEnd();
         ShopifyRender.show();
         ShopifyRender.updateSize();
-
+        ShopifyService.loadAds();
+    },
+    showVideoAd: function() {
+        jQuery('.secp-container-youtube-ad').show();
+        jQuery('#secp-ad-container-youtube-product, #secp-ad-container-youtube-collection').show();
+        jQuery('#pfc-video').hide();
+        this.showAd();
     },
     adShowed: false,
-    showInYoutubeVideo: function (html) {
-
+    showInYoutubeVideo: function (html, youtubeId) {
+        console.log('Show after video...');
         if (this.adShowed === true) {
             return;
         } else {
             this.adShowed = true;
         }
 
-        jQueryvideo = jQuery('#' + ShopifyService.options.youtubeId);
-        var $fullContainerId = 'secp-ad-container-' + ShopifyService.options.youtubeId;
-        var $adId = 'secp-ad-' + ShopifyService.options.youtubeId;
+        jQueryvideo = jQuery('#pfc-video');
+        var $fullContainerId = 'secp-ad-container-' + youtubeId;
+        var $adId = 'secp-ad-' + youtubeId;
 
         if (jQuery('#' + $fullContainerId).length == 0) {
             var jQueryfullContainer = jQuery('<div id="' + $fullContainerId + '"></div>');
@@ -227,34 +245,26 @@ ShopifyRender = {
 
         $container.height( height ).css('margin-top','-30px');
         $container.html(html);
-
-        // $container.find('.secp-product-ad-container').height( height );
         $container.find('.secp-product-close')
-            .data('video-id', ShopifyService.options.youtubeId)
             .click(function (e) {
-                jQuery('#'+ jQuery(this).data('video-id')).show();
+                jQuery('#secp-ad-container-youtube-product, #secp-ad-container-youtube-collection').hide();
+                jQuery('#pfc-video').show();
             });
 
         jQueryfullContainer.append($container);
-        jQueryvideo.hide();
-        ShopifyRender.show();
     },
     renderResponse: function (response, templateName) {
         var template = ShopifyService.templates[templateName];
         return Mustache.render(template, response.product[0]).replace(/^\s*/mg, '');
     },
     show: function () {
-
         setTimeout('ShopifyRender.showAd()', 200);
-
-        jQuery('.secp-product-shop-title').html(ShopifyService.options.secp_ad_title);
-        jQuery('.secp-product-shop-subtitle').html(ShopifyService.options.secp_ad_subtitle);
 
         jQuery('.secp-product-close').click(function (e) {
             e.preventDefault();
-            jQuery('.secp-ad, .secp-container-youtube-ad').fadeOut(function () {
+            jQuery(this).parent().fadeOut(function () {
                 jQuery(this).remove();
-            })
+            });
             return false;
         })
     },
@@ -262,37 +272,28 @@ ShopifyRender = {
         jQuery('.secp-product')
             .unbind('click')
             .click(function () {
-                ShopifyService.openProductUrl(jQuery(this).data('handle'));
+                ShopifyService.openProductUrl(jQuery(this));
                 return false;
             });
-
         jQuery('.secp-ad')
             .addClass('secp-product-loaded');
     },
     updateSize: function(){
-        console.log('update size');
         jQuery('.secp-ad').each(function(){
             var firstAd = jQuery(this).find('.owl-item:first');
-            console.log('width: ' + firstAd.width())
             var width = firstAd.width();
             jQuery(this).removeClass('secp-ad--s').removeClass('secp-ad--m').removeClass('secp-ad--l').removeClass('secp-ad--xl')
 
             if (width > 400){
-                console.log('XL')
                 jQuery(this).addClass('secp-ad--xl');
             }else if(width > 250){
-                console.log('L')
                 jQuery(this).addClass('secp-ad--l');
             }else if(width > 150){
-                console.log('M')
                 jQuery(this).addClass('secp-ad--m');
             }else{
-                console.log('S')
                 jQuery(this).addClass('secp-ad--s');
             }
-        })
-
-
+        });
     },
     setPreloadData: function(response){
         console.log('setPreloadData');
@@ -319,12 +320,19 @@ var secp_api = {
     request: function (options) {
         var defaults = {
             'action': 'SECP_shopify_request',
-            'endpoint': this.endpoint,
+            'endpoint': '',
             'format': 'json',
-            'callback': ''
+            'callback': '',
+            'position': '',
+            'product_type': '',
+            'title': '',
+            'subtitle': '',
+            'total_products': '',
+            'products_per_slide': '',
         };
         options = jQuery.extend(defaults, options);
-
+        options.productsLimit = options.total_products;
+        console.log('SECP Plugin: Loading product data');
         jQuery.ajax({
             url: ajaxurl,
             type: "POST",
@@ -333,6 +341,17 @@ var secp_api = {
             data: options,
             success: function (response) {
                 response = jQuery.parseJSON(response.replace('not authenticated', ''));
+                response.position = options.position;
+                response.product_type = options.product_type;
+                response.title = options.title;
+                response.subtitle = options.subtitle;
+                response.total_products = options.total_products;
+                response.products_per_slide = options.products_per_slide;
+                response.utm_content = options.utm_content;
+                response.utm_campaign = options.utm_campaign;
+                response.utm_source = options.utm_source;
+                response.utm_medium = options.utm_medium;
+                response.utm_term = options.utm_term;
 
                 if (options.callback) {
                     executeFunctionByName(options.callback, window, response);

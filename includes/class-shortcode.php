@@ -32,7 +32,6 @@ class SECP_Shortcode {
 	 */
 	public function hooks() {
 		add_shortcode( 'shopify', array( $this, 'shortcode' ) );
-		add_shortcode( 'shopifym', array( $this, 'shortcodem' ) );
 	}
 
 	/**
@@ -54,18 +53,5 @@ class SECP_Shortcode {
 	 */
 	public function shortcode( $args ) {
 		return $this->plugin->output->get_button( $args );
-	}
-
-	/**
-	 * Shortcode manually added rendering
-	 * Just passes arguments to output function.
-	 *
-	 * @since 0.0.9
-	 * @param  array $args Shortcode attributes.
-	 * @return string      HTML output.
-	 */
-	public function shortcodem() {
-        $custom_fields =  $this->plugin->output->secp_get_custom_fields();
-		return $this->plugin->output->do_shortcode( $custom_fields['secp_shortcode'] );
 	}
 }

@@ -98,7 +98,7 @@ button.secp-add-shortcode.button, button.secp-add-shortcode.button:hover, button
 .secp-product-remove{
   position: absolute;
   right: 10px;
-  top:0;
+  bottom:0;
   height:55px;
 }
 
@@ -172,6 +172,81 @@ button.secp-add-shortcode.button, button.secp-add-shortcode.button:hover, button
   width: 80%;
 }
 
+.secp-ad--title {
+  font-size:16px;
+  font-weight:bold;
+  color: #80b557;
+}
+
+.secp-ad-type {
+  display: inline-block;
+  float:left;
+  width: 70px;
+  height: 92px;
+  background: url(../images/sprite_ad_types.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  margin-right: 10px;
+}
+
+.sepc-ad--box {
+  border:1px solid #ececec;
+  padding:20px;
+  margin: 10px 0;
+  overflow:hidden;
+}
+
+.sepc-ad--box input[type="text"] {
+  width: 100%;
+}
+
+.secp-ads-box.active h1 {
+    color: #999!important;
+}
+
+.secp-ads-box.active .sepc-ad--box{
+    opacity: .4;
+    pointer-events: none;
+}
+
+.secp-ad--inactive .sepc-ad--content-box {
+  display: none!important;
+}
+
+.secp-ad--active .sepc-ad--content-box {
+  display: block;
+}
+
+.sepc-ad--box ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-size: 12px;
+  font-style: italic;
+}
+.sepc-ad--box ::-moz-placeholder { /* Firefox 19+ */
+  font-size: 12px;
+  font-style: italic;
+}
+.sepc-ad--box :-ms-input-placeholder { /* IE 10+ */
+  font-size: 12px;
+  font-style: italic;
+}
+.sepc-ad--box :-moz-placeholder { /* Firefox 18- */
+  font-size: 12px;
+  font-style: italic;
+}
+
+._overflow {
+  overflow: hidden;
+}
+
+
+.secp-ad-type--product_floating{}
+.secp-ad-type--product_top{background-position: -84px -108px;}
+.secp-ad-type--product_bottom{background-position: -170px 0}
+.secp-ad-type--product_video{background-position: -170px -108px;}
+.secp-ad-type--collection_top{background-position: 0 -108px;}
+.secp-ad-type--collection_bottom{background-position: -84px 0;}
+.secp-ad-type--collection_video{background-position: -254px 0;}
+
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -181,3 +256,4 @@ button.secp-add-shortcode.button, button.secp-add-shortcode.button:hover, button
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+

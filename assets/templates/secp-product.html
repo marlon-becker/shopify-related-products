@@ -2,15 +2,14 @@
     <div class="secp-ad-container">
         <div class="secp-ad secp-product-ad-container secp-single-product-ad-container">
             <div class="secp-procuct-shop-titles-wrapper">
-                <div class="secp-product-shop-title"></div>
-                <div class="secp-product-shop-subtitle"></div>
+                <div class="secp-product-shop-title">{{title}}</div>
+                <div class="secp-product-shop-subtitle">{{subtitle}}</div>
             </div>
 
             {{#product}}
             {{> secp-product-list}}
             {{/product}}
-
-            <div class="secp-product-close">&nbsp;</div>
         </div>
+        <div class="secp-product-close">&nbsp;</div>
     </div>
 </script>

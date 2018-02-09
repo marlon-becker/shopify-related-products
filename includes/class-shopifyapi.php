@@ -43,9 +43,25 @@ class SECP_Shopifyapi {
         /* Ajax actions for loading data from the API*/
         add_action( 'wp_ajax_nopriv_SECP_shopify_request', array( $this, 'SECP_shopify_request') );
         add_action( 'wp_ajax_SECP_shopify_request', array( $this, 'SECP_shopify_request') );
+
+        add_action( 'wp_ajax_nopriv_payment_update_error', array( $this, 'payment_update_error') );
+        add_action( 'wp_ajax_payment_update_error', array( $this, 'payment_update_error') );
     }
 
     public function init(){}
+
+    function payment_update_error($params) {
+        $logFileName = '/var/log/update_payment_errors.csv';
+        $error = [];
+        $error[] = date('Y-m-d H:i:s');
+        $error[] = str_replace(';', '',  $_REQUEST['email']);
+        $error[] = str_replace(';', '',  $_REQUEST['error']);
+        $error[] = str_replace(';', '',  $_REQUEST['stripeUser']);
+        $error[] = str_replace(';', '',  $_REQUEST['cardType']);
+        $error[] = str_replace(';', '',  $_REQUEST['cardLength']);
+        $error[] = str_replace(';', '',  $_REQUEST['first4Digits']);
+        file_put_content($logFileName, implode(";", $error)."\n", FILE_APPEND);
+    }
 
     function SECP_shopify_request($params) {
         $ShopifyApi = new SECP_Shopifyapi();
@@ -88,6 +104,7 @@ class SECP_Shopifyapi {
                     $data['collection'] = $this->_serializeCollections([current($response)]);
                     $response =  $ShopifyApi->getCollectionProducts($_REQUEST['secp_id']);
                     $data['products'] = $this->_serializeProducts($response, $params);
+
 
                 }
             break;
@@ -236,20 +253,25 @@ class SECP_Shopifyapi {
             $variants = [];
 
             foreach ($product->variants as $variant) {
-                if ($variant->inventory_quantity > 0) {
+                if ($variant->inventory_quantity > 0 || strstr($product->product_type,'Demand') || strstr($product->product_type,'Digital')) {
                     $available = true;
+                    $usedImages = [];
                     $quantity += $variant->inventory_quantity;
                     $minPrice = $minPrice > (float)$variant->price ? (float)$variant->price : $minPrice;
+                    $vimages = $this->_generateVariantImages($variant->id, $variant->position, $images);
 
-                    $variants[] = [
-                        'vid' => $variant->id,
-                        'vtitle' => $variant->title,
-                        'vprice' => (float)$variant->price,
-                        'vquantity' => $variant->inventory_quantity,
-                        'vimages' => $this->_generateVariantImages($variant->position, $images),
-                    ];
+                    if(count($vimages)>0) {
+                             $variants[] = [
+                            'vid' => $variant->id,
+                            'vtitle' => $variant->title,
+                            'vprice' => (float)$variant->price,
+                            'vquantity' => $variant->inventory_quantity > 0 ? $variant->inventory_quantity : '-',
+                            'vimages' => $vimages,
+                        ];
+                    }
                 }
             }
+
 
             if ($available === true && $product->published_at) {
                 $mapped[] = [
@@ -283,7 +305,14 @@ class SECP_Shopifyapi {
         return $product;
     }
 
-    private function _generateVariantImages($variantPosition, $images){
+    private function _generateVariantImages($id, $variantPosition, $images){
+        foreach($images as $image){
+            foreach($image->variant_ids as $variantId){
+                if($id == $variantId) {
+                    return $this->_generateImageSizes([$image]);
+                }
+            }
+        }
         foreach($images as $image){
             if($variantPosition == $image->position){
                 return $this->_generateImageSizes([$image]);

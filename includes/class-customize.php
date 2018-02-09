@@ -277,37 +277,306 @@ class SECP_Customize {
 		add_meta_box( 'secp_meta_box', __( 'Shopify Related product', 'shopify-related-products' ), array( $this, 'secp_build_meta_boxes'));
 	}
 
-	public $metaBoxFields = [
-	    'secp_ad_type',
-	    'secp_banner_visualization_type',
-	    'secp_ad_floating',
-	    'secp_ad_number_of_products',
-	    'secp_ad_slide_show',
-	    'secp_ad_number_of_products_per_slide',
-	    'secp_shortcode',
-	    'secp_product_id',
-	    'secp_product_variant_id',
-	    'secp_collections_ids',
-	    'secp_ad_manually',
-	    'secp_ad_youtube',
-	    'secp_ad_title',
-	    'secp_ad_subtitle',
-	    'secp_utm_content',
-	    'secp_utm_campaign',
+	const AD_TYPE_PRODUCT = 'product';
+	const AD_TYPE_COLLECTION = 'collection';
+
+	const AD_SUBTYPE_TOP = 'top';
+	const AD_SUBTYPE_BOTTOM = 'bottom';
+	const AD_SUBTYPE_VIDEO = 'video';
+	const AD_SUBTYPE_FLOATING = 'floating';
+
+    const AD_PRODUCT_FLOATING = 'product_floating';
+    const AD_PRODUCT_TOP = 'product_top';
+    const AD_PRODUCT_BOTTOM = 'product_bottom';
+    const AD_PRODUCT_VIDEO = 'product_video';
+    const AD_COLLECTION_TOP = 'collection_top';
+    const AD_COLLECTION_BOTTOM = 'collection_bottom';
+    const AD_COLLECTION_VIDEO = 'collection_video';
+
+    public static $types = [
+    self::AD_PRODUCT_FLOATING => [
+        "select" => self::AD_TYPE_PRODUCT,
+        "subtype" => self::AD_SUBTYPE_FLOATING,
+        "name" => "Floating Single Product",
+        "titles" => false,
+    ],
+    self::AD_PRODUCT_TOP => [
+        "select" => self::AD_TYPE_PRODUCT,
+        "subtype" => self::AD_SUBTYPE_TOP,
+        "name" => "Single Product Top",
+        "titles" => true,
+    ],
+    self::AD_PRODUCT_BOTTOM => [
+        "select" => self::AD_TYPE_PRODUCT,
+        "subtype" => self::AD_SUBTYPE_BOTTOM,
+        "name" => "Single Product Bottom",
+        "titles" => true,
+
+    ],
+    self::AD_COLLECTION_TOP => [
+        "select" => self::AD_TYPE_COLLECTION,
+        "subtype" => self::AD_SUBTYPE_TOP,
+        "name" => "Collection Top",
+        "titles" => true,
+    ],
+    self::AD_COLLECTION_BOTTOM => [
+        "select" => self::AD_TYPE_COLLECTION,
+        "subtype" => self::AD_SUBTYPE_BOTTOM,
+        "name" => "Collection Bottom",
+        "titles" => true,
+    ],
+    self::AD_PRODUCT_VIDEO => [
+        "select" => self::AD_TYPE_PRODUCT,
+        "subtype" => self::AD_SUBTYPE_VIDEO,
+        "name" => "Single Product After Video",
+        "group" => "video",
+        "titles" => true,
+    ],
+    self::AD_COLLECTION_VIDEO => [
+        "select" => self::AD_TYPE_COLLECTION,
+        "subtype" => self::AD_SUBTYPE_VIDEO,
+        "name" => "Collection after video",
+        "group" => "video",
+        "titles" => true,
+        ],
     ];
 
-	const AD_TYPE_ALL = 99;
-	const AD_TYPE_DEFAULT = 0;
-	const AD_TYPE_NONE = 3;
-	const AD_TYPE_SINGLE = 1;
-	const AD_TYPE_COLLECTION = 2;
+    private $commonFields = [
+        "secp_utm_content" => ['name' => 'Utm content', 'type' => 'text'],
+        "secp_utm_campaign" => ['name' => 'Utm campaign', 'type' => 'text'],
+    ];
+
+    private $titleFields = [
+        "secp_title" => ['name' => 'Ad Title', 'type' => 'text'],
+        "secp_subtitle" =>  ['name' => 'Ad Subtitle', 'type' => 'text'],
+    ];
+
+    private $collectionFields = [
+        "secp_total_products" =>  ['name' => 'Total Products', 'type' => 'select', 'from' => 2, 'to' => 20],
+        "secp_products_per_slide" => ['name' => 'Product per Slide', 'type' => 'select', 'from' => 1, 'to' => 5],
+    ];
+
+    public function secp_build_meta_boxes( $post ){
+        wp_nonce_field( basename( __FILE__ ), 'secp_meta_box_nonce' );
+        $secpNoAdFieldValue = get_post_meta( $post->ID, '_secp_no_ad', true );
+        ?>
+        <div>
+            <input type="checkbox" value="1" id="secp_no_ad" name="secp_no_ad" <?php checked( $secpNoAdFieldValue ? $secpNoAdFieldValue : 0, 1 ); ?>>
+            Don't show any ad in this page
+        </div>
+
+        <input type="hidden" id="secp_shortcode" name="secp_shortcode" style="width: 100%;" rows="20">
+
+        <div class="secp-ads-box">
+        <?php
+        foreach(self::$types as $type => $typeOptions) {
+            $this->printAdFields($type, $typeOptions, $post->ID);
+        }
+        ?>
+        </div>
+        <?php
+    }
+
+    private function printAdFields($type, $typeOptions, $postId){
+    $data = self::$types[$type];
+    $productSelect = $data['select'];
+
+    $collectionsId = 'secp_collections_ids_'.$type;
+    $selectedCollectionId =  get_post_meta( $postId, '_'.$collectionsId, true );
+
+    $productId = 'secp_product_id_'.$type;
+    $productIdVariant = 'secp_product_variant_id_'.$type;
+    $selectedProductId = get_post_meta( $postId, '_'.$productId, true );
+    $selectedProductVariantId = get_post_meta( $postId, '_'.$productIdVariant, true );
+    $active = 'secp-ad--inactive';
+    if($selectedCollectionId || $selectedProductId) {$active = 'secp-ad--active';}
+
+        ?>
+    <div id="ad_<?php echo $type ?>" class="sepc-ad--box <?php echo $active?> sepc-ad--group-<?php echo $typeOptions['group']?>" data-type="<?php echo $type?>" data-processed="false">
+
+
+        <div style="overflow: hidden">
+            <div style="float:left;width:15%">
+
+            <div class="secp-ad-type secp-ad-type--<?php echo $type?>">&nbsp;</div>
+            </div>
+            <div style="float:left;width:85%">
+                <h1 class="secp-ad--title" style="overflow: hidden; margin-top: 0; margin-bottom: 5px; padding-top: 0">
+                    <?php echo $typeOptions['name']; ?>
+                </h1>
+                <div class="_overflow">
+
+                    <?php
+                    switch ($productSelect) {
+                        case 'collection':
+                            ?>
+                            <button
+                                    class="button secp-add-shortcode shopify-selector" style="margin-bottom: 10px;"
+                                    data-adtype="<?php echo $productSelect?>"
+                                    data-endpoint="collections"
+                                    data-type="<?php echo $type?>"
+                                    data-product-type="<?php echo $productSelect?>">
+                                Select <?php echo $productSelect?>
+                            </button>
+                            <div id="secp-added-collections_<?php echo $type?>"></div>
+                            <?php
+                            break;
+                        case 'product':
+                            ?>
+
+                            <button
+                                    class="button secp-add-shortcode shopify-selector"
+                                    style="margin-bottom: 10px;"
+                                    data-adtype="<?php echo $productSelect?>"
+                                    data-endpoint="collections"
+                                    data-type="<?php echo $type?>"
+                                    data-product-type="<?php echo $productSelect?>">Select product
+                            </button>
+                            <div id="secp-added-product_<?php echo $type?>"></div>
+                            <?php
+                            break;
+                    }?>
+
+                </div>
+                <input type="hidden" id="ad_subtype_<?php echo $type ?>" value="<?php echo 'ad_subtype_' . $type ?>">
+            </div>
+        </div>
+
+        <div class="sepc-ad--content-box">
+        <?php
+        switch ($productSelect) {
+            case 'collection':
+            ?>
+                <input
+                    type="hidden"
+                    id="<?php echo $collectionsId?>"
+                    data-type="<?php echo $type?>"
+                    data-processed="false"
+                    data-role="secp_shortcode"
+                    name="<?php echo $collectionsId?>"
+                    value="<?php echo $selectedCollectionId?>"
+                    class="secp_collections_ids"
+                >
+                <hr>
+                <?php
+                foreach ($this->collectionFields as $field => $fieldData) {
+                    $this->printField($type, $field, $fieldData, $postId);
+                }
+                break;
+            case 'product':
+                $productId = 'secp_product_id_'.$type;
+                $productIdVariant = 'secp_product_variant_id_'.$type;
+                ?>
+                <input
+                    data-adtype="<?php echo $productSelect?>"
+                    data-type="<?php echo $type?>"
+                    data-processed="false"
+                    data-role="secp_shortcode"
+                    type="hidden"
+                    id="<?php echo $productId?>"
+                    name="<?php echo $productId?>"
+                    value="<?php echo $selectedProductId?>"
+                    class="secp_product_id"
+                >
+                <input
+                    data-adtype="<?php echo $productSelect?>"
+                    data-role="secp_shortcode"
+                    type="hidden"
+                    id="<?php echo $productIdVariant?>"
+                    name="<?php echo $productIdVariant?>"
+                    value="<?php echo $selectedProductVariantId?>"
+                    class="secp_product_id_variant"
+                >
+                <?php
+                break;
+        }
+        ?>
+
+            <?php
+            if($typeOptions['titles']) {
+                foreach ($this->titleFields as $field => $fieldData) {
+                    $this->printField($type, $field, $fieldData, $postId, 'Will use default configuration if not setted');
+                }
+            }
+            ?>
+            <?php
+            foreach ($this->commonFields as $field => $fieldData) {
+                $this->printField($type, $field, $fieldData, $postId, 'Will use default configuration if not setted');
+            }
+            ?>
+        </div>
+        </div>
+
+        <div id="secp_popup_content" style="display: none;"></div>
+        <?php
+    }
+
+    private function printField($type, $field, $fieldData, $postId, $placeholder = ''){
+        switch ($fieldData['type']) {
+            case 'text':
+                 $this->printFieldText($type, $field, $fieldData, $postId, $placeholder);
+            break;
+            case 'select':
+                $this->printFieldSelect($type, $field, $fieldData, $postId);
+            break;
+        }
+    }
+
+    private function printFieldText($type, $field, $fieldData, $postId, $placeholder = ''){
+    $id = $field.'_'.$type;
+    ?>
+    <p style="overflow: hidden;margin-bottom: 1px;">
+        <div style="width: 18%; display: inline-block;">
+            <label for="<?php echo $id?>"><?php echo $fieldData['name']?></label>
+        </div>
+        <div style="width: 81%;display: inline-block;">
+            <input placeholder="<?php echo $placeholder?>" type="text" id="<?php echo $id?>" name="<?php echo $id?>" data-role="secp_shortcode" value="<?php echo get_post_meta( $postId, '_'.$id, true )?>">
+        </div>
+    </p>
+
+    <?php
+    }
+
+    private function printFieldSelect($type, $field, $fieldData, $postId){
+    $id = $field.'_'.$type;
+    $settedValue = get_post_meta( $postId, '_'.$id, true );
+    $defaultValue = strstr($field,'total') ? 9 : 3;
+    $selectValue = $settedValue > 0 ? $settedValue : $defaultValue;
+
+    ?>
+    <p style="overflow: hidden;margin-bottom: 1px;">
+        <div style="width: 18%; display: inline-block">
+            <label><?php echo $fieldData['name']?></label>
+        </div>
+        <div style="width: 81%;display: inline-block;">
+            <select
+                    autocomplete="false"
+                    style="width: 50px"
+                    id="<?php echo $id?>"
+                    name="<?php echo $id?>"
+                    data-role="secp_shortcode"
+            >
+                <?php
+
+                for($x=$fieldData['from'];$x<=$fieldData['to'];$x++) {
+                ?>
+                    <option <?php if($selectValue == $x){echo 'selected="selected"';}?> value="<?php echo $x?>"><?php echo $x?></option>
+                <?php
+                }
+                ?>
+            </select>
+        </div>
+    </p>
+
+    <?php
+    }
 
 	/**
 	 * Build custom field meta box
 	 *
 	 * @param post $post The post object
 	 */
-	public function secp_build_meta_boxes( $post ){
+	public function secp_build_meta_boxes2( $post ){
 
     wp_nonce_field( basename( __FILE__ ), 'secp_meta_box_nonce' );
 
@@ -483,19 +752,24 @@ class SECP_Customize {
             return;
         }
 
-        foreach($this->metaBoxFields as $metaBoxField){
+        if(!array_key_exists('secp_no_ad', $_REQUEST)) {
+            $_POST['secp_no_ad'] = 0;
+            $_REQUEST['secp_no_ad'] = 0;
+        }
 
+        foreach($_POST as $metaBoxField => $value){
 			if(!strstr($metaBoxField, 'secp')){continue;}
-
             // store custom fields values
             if( isset( $_REQUEST[$metaBoxField] ) ){
-                $value = $_POST[$metaBoxField];
+                $value = $_REQUEST[$metaBoxField];
                 // save data
                 update_post_meta( $post_id, '_'.$metaBoxField, $value );
             }else{
                 // delete data
                 delete_post_meta( $post_id, '_'.$metaBoxField );
             }
+
         }
+
     }
 }

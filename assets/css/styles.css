@@ -129,11 +129,13 @@
     display: none;
 }
 
+
 .product-image:hover .hover-info,
 .product-block:hover .block-inner .hover-info,
 .product-block.expanded .block-inner .hover-info {
     opacity: 1;
     display: block;
+    background: #fff;
 }
 
 .product-block:hover .shadow{
@@ -176,6 +178,7 @@
     vertical-align: middle;
     padding: 0 20px;
     text-align: center;
+    background: #fff;
 
 }
 
@@ -230,9 +233,6 @@
 
 .secp-product-ad-container{
     padding: 3rem 2rem 2rem 2rem;
-    background: #fff;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    border: 1px solid #ececec;
     margin: 2rem auto 0;
     max-width: 800px;
     overflow: hidden;
@@ -241,6 +241,9 @@
 
 .secp-ad-container{
     padding-bottom:2rem;
+    position: relative;
+    background: #f5f5f2;
+    margin-top: 114px;
 }
 
 .secp-container-youtube-ad .secp-product-single{
@@ -310,6 +313,7 @@
 .secp-ad img, .secp-ad .secp-product-title{
     opacity: .9;
     max-width: 100%;
+    width: 100%;
 }
 
 .secp-ad:hover img, .secp-ad:hover .secp-product-title{
@@ -391,6 +395,9 @@
     margin-bottom: .75rem;
 }
 
+.owl-carousel .owl-stage{
+    padding: 10px 0;
+}
 .owl-carousel .owl-stage-outer{
     overflow: visible;
 
@@ -477,3 +484,9 @@
     border: 0;
 }
 
+#secp-ad-container-youtube-product, #secp-ad-container-youtube-collection{display: none}
+
+
+.image-cont.shadow{
+    background: #fff;
+}
